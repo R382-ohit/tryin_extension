@@ -1,11 +1,15 @@
 class RandomizedSet {
 public:
     unordered_map<int, int> mpp;
-    RandomizedSet() {}
+    vector<int> nums;
+    int index;
+    RandomizedSet() { index = 0; }
 
     bool insert(int val) {
         if (mpp.find(val) == mpp.end()) {
-            mpp[val] = 1;
+            mpp[val] = index;
+            nums.push_back(val);
+            index++;
             return true;
         }
         return false;
@@ -13,18 +17,22 @@ public:
 
     bool remove(int val) {
         if (mpp.find(val) != mpp.end()) {
+            int pos = mpp[val];
+            int ele = nums.back();
+            nums[pos] = ele;
+            nums.back() = val;
+            nums.pop_back();
+            mpp[ele] = pos;
             mpp.erase(val);
+            index--;
             return true;
         }
         return false;
     }
 
     int getRandom() {
-        // each element must have the same probability of being returned
-        int random_index = rand() % mpp.size();
-        auto it = mpp.begin();
-        advance(it, random_index);
-        return it->first;
+        int idx = rand() % index;
+        return nums[idx];
     }
 };
 
